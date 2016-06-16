@@ -1,0 +1,36 @@
+---
+- name: test build
+  hosts: test
+  remote_user: root
+  vars:
+    iam_role_stack_name: "ansible-role-cfn-iam-role-stack"
+    assume_role_policy_document: "{{ lookup('file','assume_role.doc.json') }}"
+    iam_role_tags:
+      Name: "ansible-role-cfn-iam-role-stack-testing"
+    iam_role_policies:
+      - name: test_lambda_policy
+        policy:
+          "Version": "2012-10-17"
+          "Statement": 
+            - "Effect": "Allow"
+              "Action": ['logs:CreateLogGroup', 'logs:CreateLogStream', 'logs:PutLogEvents']
+              "Resource": "*"
+  roles:
+    - ansible-role-cfn-iam-role
+    - ansible-role-module-cfn-lookup
+  post_tasks:
+    - cfn_lookup:
+        stack_name: "{{iam_role_stack_name}}"
+        fact: "cf_output"
+        region: "{{ region|default('us-west-2') }}"
+    - debug: msg="{{ cf_output }}"
+
+
+- name: test cleanup
+  hosts: test
+  remote_user: root
+  vars:
+    iam_role_stack_name: "ansible-role-cfn-iam-role-stack"
+    iam_role_stack_state: "absent"
+  roles:
+    - ansible-role-cfn-iam-role

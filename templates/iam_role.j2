@@ -1,0 +1,41 @@
+{
+  "AWSTemplateFormatVersion" : "2010-09-09",
+  "Description" : "{{ iam_role_description|default('Probably just some role, you know?') }}",
+  "Resources" : {
+    "IAMRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {{ assume_role_policy_document|to_json }},
+        "Policies": [
+          {% for p in iam_role_policies %}
+	  {
+            "PolicyName": "{{ p.name }}",
+            "PolicyDocument": {{ p.policy|to_json }}{% if not loop.last %},{% endif %}
+          }{% if not loop.last %},{% endif %}
+          {% endfor %}
+        ],
+        "ManagedPolicyArns" : [
+          {% for mp_arn in iam_role_managed_policy_arns %}
+           "{{mp_arn}}"{% if not loop.last %},{% endif %}
+          {% endfor %}
+        ],
+        "Path": "{{ iam_role_path|default('/') }}"
+      }
+    },
+    "InstanceProfile": {
+      "Type": "AWS::IAM::InstanceProfile",
+      "Properties": {
+        "Roles": [
+          {
+            "Ref": "IAMRole"
+          }
+        ],
+        "Path": "{{ iam_role_path|default('/') }}"
+      }
+    }
+  },
+  "Outputs" : {
+    "RoleName" : { "Value": { "Ref": "IAMRole" }, "Description": "Name of the created role" },
+    "ProfileName" : { "Value": { "Ref": "InstanceProfile" }, "Description": "Name of the created profile" }
+  }
+}

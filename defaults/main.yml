@@ -1,0 +1,14 @@
+---
+# defaults file for ansible-role-cfn-iam-role
+assume_role_policy_document:
+  "Version" : "2012-10-17"
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": { "Service": [ "ec2.amazonaws.com" ] },
+      "Action": [ "sts:AssumeRole" ]
+    }
+  ]
+iam_role_policies: []
+iam_role_managed_policy_arns: []
+iam_role_tags: {}
