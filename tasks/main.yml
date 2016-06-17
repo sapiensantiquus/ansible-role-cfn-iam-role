@@ -18,3 +18,6 @@
     region: "{{ region|default('us-west-2') }}"
     security_token: "{{ lookup('env','AWS_SESSION_TOKEN')|default(omit, true) }}"
     tags: "{{ iam_role_tags }}"
+  register: iam_role_cf_output
+
+- debug: msg="{{ iam_role_cf_output }}" verbosity=1

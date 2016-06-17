@@ -23,8 +23,7 @@ LABEL TEST_TAG=$$TEST_TAG
 ADD tests /tmp/playbook
 ADD . /tmp/playbook/roles/$$TEST_LABEL
 WORKDIR /tmp/playbook
-RUN ansible-galaxy install -r requirements.yml -p ./roles && \\
-    ansible-playbook $$ANSIBLE_OPTIONS -i inventory test.yml
+RUN ansible-playbook $$ANSIBLE_OPTIONS -i inventory test.yml
 endef
 export DOCKER_BODY
 
