@@ -15,6 +15,12 @@
             - "Effect": "Allow"
               "Action": ['logs:CreateLogGroup', 'logs:CreateLogStream', 'logs:PutLogEvents']
               "Resource": "*"
+      - name: test_lambda_policyb
+        policy:
+          "Version": "2012-10-17"
+          "Statement": 
+            - "Effect": "Allow"
+              "Action": ['logs:CreateLogGroup', 'logs:CreateLogStream', 'logs:PutLogEvents']
   roles:
     - ansible-role-cfn-iam-role
   post_tasks:
@@ -36,6 +42,12 @@
             - "Effect": "Allow"
               "Action": ['logs:CreateLogGroup', 'logs:CreateLogStream', 'logs:PutLogEvents']
               "Resource": "*"
+      - name: test_lambda_policyb
+        policy:
+          "Version": "2012-10-17"
+          "Statement": 
+            - "Effect": "Allow"
+              "Action": ['logs:CreateLogGroup', 'logs:CreateLogStream', 'logs:PutLogEvents']
   roles:
     - ansible-role-cfn-iam-role
   post_tasks:
