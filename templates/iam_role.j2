@@ -10,7 +10,7 @@
           {% for p in iam_role_policies %}
 	  {
             "PolicyName": "{{ p.name }}",
-            "PolicyDocument": {{ p.policy|to_json }}{% if not loop.last %},{% endif %}
+            "PolicyDocument": {{ p.policy|to_json }}
           }{% if not loop.last %},{% endif %}
           {% endfor %}
         ],
