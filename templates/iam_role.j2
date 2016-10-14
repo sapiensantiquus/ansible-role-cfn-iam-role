@@ -44,8 +44,8 @@
   "Outputs" : {
     {% for iamrole in iam_roles %}
     "{{ iamrole.name }}" : { "Value": { "Ref": "{{ iamrole.name }}" }, "Description": "Name of the created role" },
-    "{{ iamrole.profile_name }}" : { "Value": { "Ref": "{{ iamrole.profile_name }}" }, "Description": "Name of the created profile" }
-    {% if not loop.last %},{% endif %}
+    "{{ iamrole.profile_name }}" : { "Value": { "Ref": "{{ iamrole.profile_name }}" }, "Description": "Name of the created profile" },
+    "{{ iamrole.name }}Arn" : { "Value": { "Fn::GetAtt" : ["{{ iamrole.name }}", "Arn"] } }{% if not loop.last %},{% endif %}
     {% endfor %}
   }
 }
