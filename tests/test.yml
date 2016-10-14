@@ -55,13 +55,38 @@
   post_tasks:
     - debug: msg="{{ iam_role_cf_output }}"
 
+#
+- name: test multi role/profile stack
+  hosts: test
+  remote_user: root
+  vars:
+    iam_role_stack_name: "ansible-role-cfn-iam-multi-role-stack"
+    iam_role_tags:
+      Name: "ansible-role-cfn-iam-multi-role-stack"
+    iam_roles:
+      - name: FirstRole
+        profile_name: FirstRoleProfile
+        iam_role_policies:
+          - name: test_policy
+            policy:
+              "Version": "2012-10-17"
+              "Statement":
+                - "Effect": "Allow"
+                  "Action": ['logs:PutLogEvents']
+                  "Resource": "*"
+      - name: SecondRole
+        profile_name: SecondRoleProfile
+        iam_role_managed_policy_arns: ["arn:aws:iam::aws:policy/AmazonEC2ReadOnlyAccess"]
+  roles:
+    - role: ansible-role-cfn-iam-role
+
 - name: test cleanup
   hosts: test
   remote_user: root
   vars:
-    iam_role_stack_name: "ansible-role-cfn-iam-role-stack"
     iam_role_stack_state: "absent"
   roles:
-    - ansible-role-cfn-iam-role
-  post_tasks:
-    - debug: msg="{{ iam_role_cf_output }}"
+    - role: ansible-role-cfn-iam-role
+      iam_role_stack_name: "ansible-role-cfn-iam-role-stack"
+    - role: ansible-role-cfn-iam-role
+      iam_role_stack_name: "ansible-role-cfn-iam-multi-role-stack"
