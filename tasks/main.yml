@@ -8,11 +8,11 @@
 - name: Template role
   template:
     src: iam_role.j2
-    dest: "build/iam_role.json"
+    dest: "build/{{ iam_role_stack_name }}.json"
 
 - name: Create or remove role stack
   cloudformation:
-    template: "build/iam_role.json"
+    template: "build/{{ iam_role_stack_name }}.json"
     stack_name: "{{ iam_role_stack_name }}"
     state: "{{ iam_role_stack_state|default('present') }}"
     region: "{{ region|default('us-west-2') }}"
