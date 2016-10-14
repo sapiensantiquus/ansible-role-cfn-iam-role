@@ -2,40 +2,50 @@
   "AWSTemplateFormatVersion" : "2010-09-09",
   "Description" : "{{ iam_role_description|default('Probably just some role, you know?') }}",
   "Resources" : {
-    "IAMRole": {
+    {% for iamrole in iam_roles %}
+    "{{ iamrole.name }}": {
       "Type": "AWS::IAM::Role",
       "Properties": {
-        "AssumeRolePolicyDocument": {{ assume_role_policy_document|to_json }},
+        "AssumeRolePolicyDocument": {{ iamrole.assume_role_policy_document|default(assume_role_policy_document)|to_json }},
         "Policies": [
-          {% for p in iam_role_policies %}
-	  {
-            "PolicyName": "{{ p.name }}",
-            "PolicyDocument": {{ p.policy|to_json }}
-          }{% if not loop.last %},{% endif %}
+          {% for p in iamrole.iam_role_policies|default(iam_role_policies) %}
+	    {
+              "PolicyName": "{{ p.name }}",
+              "PolicyDocument": {{ p.policy|to_json }}
+            }{% if not loop.last %},{% endif %}
           {% endfor %}
         ],
         "ManagedPolicyArns" : [
-          {% for mp_arn in iam_role_managed_policy_arns %}
+          {% for mp_arn in iamrole.iam_role_managed_policy_arns|default(iam_role_managed_policy_arns) %}
            "{{mp_arn}}"{% if not loop.last %},{% endif %}
           {% endfor %}
         ],
-        "Path": "{{ iam_role_path|default('/') }}"
+        "Path": "{{ iamrole.iam_role_path|default('/') }}"
       }
-    },
-    "InstanceProfile": {
+    }
+    {% if not loop.last %},{% endif %}
+    {% endfor %}
+    ,
+    {% for iamrole in iam_roles %}
+    "{{ iamrole.profile_name }}": {
       "Type": "AWS::IAM::InstanceProfile",
       "Properties": {
         "Roles": [
           {
-            "Ref": "IAMRole"
+            "Ref": "{{ iamrole.name }}"
           }
         ],
-        "Path": "{{ iam_role_path|default('/') }}"
+        "Path": "{{ iamrole.iam_role_path|default('/') }}"
       }
     }
+    {% if not loop.last %},{% endif %}
+    {% endfor %}
   },
   "Outputs" : {
-    "RoleName" : { "Value": { "Ref": "IAMRole" }, "Description": "Name of the created role" },
-    "ProfileName" : { "Value": { "Ref": "InstanceProfile" }, "Description": "Name of the created profile" }
+    {% for iamrole in iam_roles %}
+    "{{ iamrole.name }}" : { "Value": { "Ref": "{{ iamrole.name }}" }, "Description": "Name of the created role" },
+    "{{ iamrole.profile_name }}" : { "Value": { "Ref": "{{ iamrole.profile_name }}" }, "Description": "Name of the created profile" }
+    {% if not loop.last %},{% endif %}
+    {% endfor %}
   }
 }
