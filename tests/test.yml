@@ -21,6 +21,7 @@
           "Statement": 
             - "Effect": "Allow"
               "Action": ['logs:CreateLogGroup', 'logs:CreateLogStream', 'logs:PutLogEvents']
+              "Resource": "*"
   roles:
     - ansible-role-cfn-iam-role
   post_tasks:
@@ -48,6 +49,7 @@
           "Statement": 
             - "Effect": "Allow"
               "Action": ['logs:CreateLogGroup', 'logs:CreateLogStream', 'logs:PutLogEvents']
+              "Resource": "*"
   roles:
     - ansible-role-cfn-iam-role
   post_tasks:
