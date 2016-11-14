@@ -12,6 +12,8 @@ assume_role_policy_document:
 iam_role_policies: []
 iam_role_managed_policy_arns: []
 iam_role_tags: {}
+iam_role_path: "/"
 iam_roles:
   - name: RoleName
     profile_name: ProfileName
+    iam_role_path: "{{ iam_role_path }}"

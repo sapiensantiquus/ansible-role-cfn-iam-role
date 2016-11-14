@@ -20,7 +20,7 @@
            "{{mp_arn}}"{% if not loop.last %},{% endif %}
           {% endfor %}
         ],
-        "Path": "{{ iamrole.iam_role_path|default('/') }}"
+        "Path": "{{ iamrole.iam_role_path|default(iam_role_path) }}"
       }
     }
     {% if not loop.last %},{% endif %}
@@ -35,7 +35,7 @@
             "Ref": "{{ iamrole.name }}"
           }
         ],
-        "Path": "{{ iamrole.iam_role_path|default('/') }}"
+        "Path": "{{ iamrole.iam_role_path|default(iam_role_path) }}"
       }
     }
     {% if not loop.last %},{% endif %}
