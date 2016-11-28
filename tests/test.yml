@@ -5,6 +5,7 @@
   vars:
     iam_role_stack_name: "ansible-role-cfn-iam-role-stack"
     assume_role_policy_document: "{{ lookup('file','assume_role.doc.json') }}"
+    iam_role_stack_fact_name: "testing_fact_name"
     iam_role_tags:
       Name: "ansible-role-cfn-iam-role-stack-testing"
     iam_role_policies:
@@ -25,13 +26,17 @@
   roles:
     - ansible-role-cfn-iam-role
   post_tasks:
-    - debug: msg="{{ iam_role_cf_output }}"
+    - name: "assert that output was same for internal var and defined fact"
+      assert:
+        that:
+          - "iam_role_cf_output == testing_fact_name"
 
 - name: test build idempotence
   hosts: test
   remote_user: root
   vars:
     iam_role_stack_name: "ansible-role-cfn-iam-role-stack"
+    iam_role_stack_fact_name: "testing_fact_name"
     assume_role_policy_document: "{{ lookup('file','assume_role.doc.json') }}"
     iam_role_tags:
       Name: "ansible-role-cfn-iam-role-stack-testing"
@@ -53,9 +58,11 @@
   roles:
     - ansible-role-cfn-iam-role
   post_tasks:
-    - debug: msg="{{ iam_role_cf_output }}"
+    - name: "validate that this run did not report changed"
+      assert:
+        that:
+          - "not iam_role_cf_output.changed|bool"
 
-#
 - name: test multi role/profile stack
   hosts: test
   remote_user: root
