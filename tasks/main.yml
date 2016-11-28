@@ -21,3 +21,8 @@
   register: iam_role_cf_output
 
 - debug: msg="{{ iam_role_cf_output }}" verbosity=1
+
+- name: Set registered variable fact
+  set_fact: 
+    "{{ iam_role_stack_fact_name }}" : "{{ iam_role_cf_output }}"
+  when: iam_role_stack_fact_name is defined
